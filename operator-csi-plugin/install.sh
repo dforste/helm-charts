@@ -57,7 +57,11 @@ CRDAPIVERSION="$(${KUBECTL} explain CustomResourceDefinition | grep "VERSION:" |
 CLUSTERROLEAPIVERSION="$(${KUBECTL} explain ClusterRole | grep "VERSION:" | awk '{ print $2 }')"
 CLUSTERROLEBINDINGAPIVERSION="$(${KUBECTL} explain ClusterRoleBinding | grep "VERSION:" | awk '{ print $2 }')"
 ROLEAPIVERSION="$(${KUBECTL} explain Role | grep "VERSION:" | awk '{ print $2 }')"
-ROLEBINDINGAPIVERSION="$(${KUBECTL} explain RoleBinding | grep "VERSION:" | awk '{ print $2 }')"
+if [[ "${ORCHESTRATOR}" == "openshift" ]]; then
+    ROLEBINDINGAPIVERSION="rbac.authorization.k8s.io/v1beta1"
+else
+    ROLEBINDINGAPIVERSION="$(${KUBECTL} explain RoleBinding | grep "VERSION:" | awk '{ print $2 }')"
+fi
 DEPLOYMENTAPIVERSION="$(${KUBECTL} explain Deployment | grep "VERSION:" | awk '{ print $2 }')"
 
 if [[ -z ${VALUESFILE} || ! -f ${VALUESFILE} ]]; then
